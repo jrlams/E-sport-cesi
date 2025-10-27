@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-RUN apk add --no-cache netcat
+RUN apk add --no-cache netcat-openbsd
 
 COPY . .
 
