@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { MessageSquare, Mail, Star, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { supabase, type Feedback as FeedbackType } from '../lib/supabase';
 
 export default function Feedback() {
   const [formData, setFormData] = useState({
@@ -62,24 +61,20 @@ export default function Feedback() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    const { error } = await supabase
-      .from('feedback')
-      .insert([{
-        email: formData.email,
-        rating: formData.rating,
-        organization_rating: formData.organization_rating,
-        gameplay_rating: formData.gameplay_rating,
-        venue_rating: formData.venue_rating,
-        comments: formData.comments || null,
-        would_participate_again: formData.would_participate_again
-      }]);
+    try {
+      const response = await fetch('http://localhost:3000/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Something went wrong');
+      }
 
-    if (error) {
-      setErrorMessage('Une erreur est survenue. Veuillez réessayer.');
-      setSubmitStatus('error');
-    } else {
       setSubmitStatus('success');
       setFormData({
         email: '',
@@ -88,8 +83,17 @@ export default function Feedback() {
         gameplay_rating: 0,
         venue_rating: 0,
         comments: '',
-        would_participate_again: true
+        would_participate_again: true,
       });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('An error occurred. Please try again.');
+      }
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

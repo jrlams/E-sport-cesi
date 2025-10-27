@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { UserPlus, Mail, User, Users, Gamepad2, Phone, CheckCircle, AlertCircle } from 'lucide-react';
-import { supabase, type Registration } from '../lib/supabase';
 
 export default function Registration() {
-  const [formData, setFormData] = useState<Omit<Registration, 'id' | 'created_at' | 'confirmed'>>({
+  const [formData, setFormData] = useState({
     email: '',
     pseudo: '',
     team_name: '',
@@ -56,34 +55,37 @@ export default function Registration() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    const { error } = await supabase
-      .from('registrations')
-      .insert([{
-        email: formData.email,
-        pseudo: formData.pseudo,
-        team_name: formData.team_name || null,
-        game: formData.game,
-        phone: formData.phone || null
-      }]);
+    try {
+      const response = await fetch('http://localhost:3000/api/registrations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
-
-    if (error) {
-      if (error.code === '23505') {
-        setErrorMessage('Cette adresse email est déjà enregistrée');
-      } else {
-        setErrorMessage('Une erreur est survenue. Veuillez réessayer.');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Something went wrong');
       }
-      setSubmitStatus('error');
-    } else {
+
       setSubmitStatus('success');
       setFormData({
         email: '',
         pseudo: '',
         team_name: '',
         game: '',
-        phone: ''
+        phone: '',
       });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('An error occurred. Please try again.');
+      }
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

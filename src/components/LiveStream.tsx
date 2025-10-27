@@ -3,12 +3,10 @@ import { Radio, Maximize2, Users } from 'lucide-react';
 
 export default function LiveStream() {
   const [streamUrl, setStreamUrl] = useState('');
-  const [isLive, setIsLive] = useState(false);
 
   const handleStreamUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setStreamUrl(url);
-    setIsLive(url.includes('twitch.tv') || url.includes('youtube.com') || url.includes('youtu.be'));
   };
 
   const getEmbedUrl = (url: string) => {
