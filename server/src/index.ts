@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -8,13 +11,19 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+const { DATABASE_USER, DATABASE_PASSWORD, DATABASE_SERVER, DATABASE_NAME, NODE_ENV } = process.env;
+
+if (!DATABASE_USER || !DATABASE_PASSWORD || !DATABASE_SERVER || !DATABASE_NAME) {
+  throw new Error('Missing database configuration in environment variables.');
+}
+
 const dbConfig = {
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  server: process.env.DATABASE_SERVER,
-  database: process.env.DATABASE_NAME,
+  user: DATABASE_USER,
+  password: DATABASE_PASSWORD,
+  server: DATABASE_SERVER,
+  database: DATABASE_NAME,
   options: {
-    encrypt: process.env.NODE_ENV === 'production',
+    encrypt: NODE_ENV === 'production',
     trustServerCertificate: true
   }
 };
@@ -77,6 +86,10 @@ sql.connect(dbConfig).then(pool => {
     } catch (error) {
       res.status(500).send({ message: 'Error fetching feedback', error });
     }
+  });
+
+  app.get('/api/stream', (req, res) => {
+    res.status(200).json({ url: 'https://www.twitch.tv/cesi_esport' });
   });
 }).catch(err => {
   console.error('Database connection failed:', err);

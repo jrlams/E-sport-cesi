@@ -1,8 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Radio, Maximize2, Users } from 'lucide-react';
 
 export default function LiveStream() {
   const [streamUrl, setStreamUrl] = useState('');
+
+  useEffect(() => {
+    const fetchStreamUrl = async () => {
+      try {
+        const response = await fetch('/api/stream');
+        const data = await response.json();
+        setStreamUrl(data.url);
+      } catch (error) {
+        console.error('Error fetching stream URL:', error);
+      }
+    };
+
+    fetchStreamUrl();
+  }, []);
 
   const handleStreamUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
