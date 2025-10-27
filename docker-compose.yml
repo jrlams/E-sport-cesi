@@ -3,23 +3,27 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - '80:80'
     depends_on:
       - backend
+    networks:
+      - esport-net
 
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - '3001:3000'   # 3001 côté host, 3000 dans le conteneur Node
     env_file:
       - .env
     depends_on:
       - sqlserver
+    networks:
+      - esport-net
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -31,6 +35,12 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    networks:
+      - esport-net
 
 volumes:
   sqlserver_data:
+
+networks:
+  esport-net:
+    driver: bridge
