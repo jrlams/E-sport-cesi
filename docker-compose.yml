@@ -1,13 +1,36 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - sqlserver
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_server
-    environment:
-      ACCEPT_EULA: 'Y'
-      SA_PASSWORD: 'yourStrong(!)Password'
+    env_file:
+      - .env
     ports:
       - '1433:1433'
     volumes:
+      - sqlserver_data:/var/opt/mssql
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+
+volumes:
+  sqlserver_data:

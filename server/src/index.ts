@@ -9,13 +9,13 @@ app.use(cors());
 app.use(express.json());
 
 const dbConfig = {
-  user: 'sa',
-  password: 'yourStrong(!)Password',
-  server: 'localhost',
-  database: 'esport_event',
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  server: process.env.DATABASE_SERVER,
+  database: process.env.DATABASE_NAME,
   options: {
-    encrypt: true, // Use this if you're on Azure
-    trustServerCertificate: true // Change to true for local dev / self-signed certs
+    encrypt: process.env.NODE_ENV === 'production',
+    trustServerCertificate: true
   }
 };
 

@@ -56,7 +56,7 @@ export default function Registration() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/registrations', {
+      const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
