@@ -13,13 +13,15 @@ const Admin = () => {
     };
 
     return (
-        <Container maxWidth="lg">
-            {loggedIn ? (
-                <Dashboard password={password} />
-            ) : (
-                <Login onLogin={handleLogin} />
-            )}
-        </Container>
+        <div className="bg-white min-h-screen">
+            <Container maxWidth="lg">
+                {loggedIn ? (
+                    <Dashboard password={password} />
+                ) : (
+                    <Login onLogin={handleLogin} />
+                )}
+            </Container>
+        </div>
     );
 };
 
