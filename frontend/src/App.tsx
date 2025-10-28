@@ -12,7 +12,7 @@ import Games from './components/Games';
 function App() {
   const is_admin = window.location.pathname === '/admin';
   return (
-    <div className={`min-h-screen ${is_admin ? '' : 'bg-slate-900'}`}>
+    <div className={`min-h-screen`}>
       {is_admin ? (
         <Admin />
       ) : (

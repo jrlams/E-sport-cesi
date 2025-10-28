@@ -39,44 +39,46 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-cyan-900/30">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDYsMTgyLDIxMiwwLjEpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-      </div>
-
-      <div className="absolute top-1/4 left-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-700"></div>
-
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+      style={{
+        backgroundImage: "url('https://www.pixelstalk.net/wp-content/uploads/2016/07/Minecraft-Wallpapers-HD-Backgrounds.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
-          <Trophy className="w-5 h-5 text-cyan-400" />
-          <span className="text-cyan-400 font-semibold">TOURNOI OFFICIEL CESI</span>
+        <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 bg-minecraft-brown/80 border-2 border-minecraft-gold rounded-md">
+          <Trophy className="w-5 h-5 text-minecraft-gold" />
+          <span className="text-minecraft-gold font-semibold">TOURNOI OFFICIEL CESI</span>
         </div>
 
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-white">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-minecraft-gold" style={{ textShadow: '4px 4px #7C4F2E' }}>
           CESI E-SPORT
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mt-2">
+          <span className="block mt-2">
             CHAMPIONSHIP 2026
           </span>
         </h1>
 
-        <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+        <p className="text-xl text-minecraft-gray mb-12 max-w-2xl mx-auto" style={{ textShadow: '2px 2px #333' }}>
           Rejoignez le plus grand tournoi e-sport organisé par le CESI. Compétition, passion et gaming au rendez-vous.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-6 mb-12 text-gray-300">
+        <div className="flex flex-wrap justify-center gap-6 mb-12 text-minecraft-gray">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-cyan-400" />
-            <span>28 Février 2026</span>
+            <Calendar className="w-5 h-5 text-minecraft-gold" />
+            <span className="font-bold">28 Février 2026</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-cyan-400" />
-            <span>Campus CESI</span>
+            <MapPin className="w-5 h-5 text-minecraft-gold" />
+            <span className="font-bold">Campus CESI</span>
           </div>
         </div>
 
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-6">COMPTE À REBOURS</h2>
+          <h2 className="text-2xl font-bold text-minecraft-gold mb-6" style={{ textShadow: '3px 3px #7C4F2E' }}>COMPTE À REBOURS</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
               { value: timeLeft.days, label: 'JOURS' },
@@ -86,12 +88,13 @@ export default function Hero() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="bg-slate-800/50 backdrop-blur-sm border-2 border-cyan-500/30 rounded-lg p-6 transform hover:scale-105 transition-transform"
+                className="bg-minecraft-brown/70 border-4 border-[#3B271A] rounded-lg p-6 transform transition-transform"
+                style={{ boxShadow: 'inset 0 6px 0 0 rgba(0,0,0,0.2)' }}
               >
-                <div className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-2 font-mono">
+                <div className="text-4xl sm:text-5xl font-bold text-minecraft-gold mb-2 font-mono" style={{ textShadow: '3px 3px #3B271A' }}>
                   {String(item.value).padStart(2, '0')}
                 </div>
-                <div className="text-sm text-gray-400 font-semibold tracking-wider">
+                <div className="text-sm text-minecraft-gray font-bold tracking-wider">
                   {item.label}
                 </div>
               </div>
@@ -101,11 +104,10 @@ export default function Hero() {
 
         <button
           onClick={scrollToRegister}
-          className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-lg rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50"
+          className="group relative inline-flex items-center gap-3 px-8 py-4 bg-minecraft-blue text-minecraft-gray font-bold text-lg rounded-md border-b-8 border-blue-900/70 hover:bg-blue-500 active:border-b-2 active:mt-2 transition-all duration-100"
         >
           <span className="relative z-10">S'INSCRIRE MAINTENANT</span>
-          <Trophy className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform" />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <Trophy className="w-5 h-5 relative z-10 group-hover:animate-bounce" />
         </button>
       </div>
     </section>

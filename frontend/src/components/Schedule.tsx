@@ -15,24 +15,26 @@ const Schedule = () => {
   ];
 
   return (
-    <section id="schedule" className="py-20 bg-slate-800 text-white">
+    <section id="schedule" className="py-20 bg-minecraft-green text-minecraft-gray">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Programme de l'événement</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-slate-900 rounded-lg">
+        <h2 className="text-4xl sm:text-5xl font-bold text-center mb-12 text-minecraft-gold" style={{ textShadow: '4px 4px #3B271A' }}>
+          Programme de l'événement
+        </h2>
+        <div className="overflow-x-auto bg-minecraft-brown/70 border-4 border-[#3B271A] rounded-lg p-4" style={{ boxShadow: 'inset 0 6px 0 0 rgba(0,0,0,0.2)' }}>
+          <table className="min-w-full">
             <thead>
-              <tr>
-                <th className="py-3 px-4 text-left">Heure</th>
-                <th className="py-3 px-4 text-left">Jeu</th>
-                <th className="py-3 px-4 text-left">Durée</th>
-                <th className="py-3 px-4 text-left">Détails</th>
+              <tr className="border-b-4 border-[#3B271A]">
+                <th className="py-3 px-4 text-left text-minecraft-gold font-bold">Heure</th>
+                <th className="py-3 px-4 text-left text-minecraft-gold font-bold">Jeu</th>
+                <th className="py-3 px-4 text-left text-minecraft-gold font-bold">Durée</th>
+                <th className="py-3 px-4 text-left text-minecraft-gold font-bold">Détails</th>
               </tr>
             </thead>
             <tbody>
               {scheduleData.map((item, index) => (
-                <tr key={index} className="border-t border-slate-700">
-                  <td className="py-3 px-4">{item.time}</td>
-                  <td className="py-3 px-4">{item.game}</td>
+                <tr key={index} className="border-t border-[#3B271A]/50">
+                  <td className="py-3 px-4 font-mono">{item.time}</td>
+                  <td className="py-3 px-4 font-bold">{item.game}</td>
                   <td className="py-3 px-4">{item.duration}</td>
                   <td className="py-3 px-4">{item.details}</td>
                 </tr>
