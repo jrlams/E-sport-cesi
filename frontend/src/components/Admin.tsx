@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Dashboard from './Dashboard';
+import { Container } from '@mui/material';
 
 const Admin = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -12,13 +13,13 @@ const Admin = () => {
     };
 
     return (
-        <div>
+        <Container maxWidth="lg">
             {loggedIn ? (
                 <Dashboard password={password} />
             ) : (
                 <Login onLogin={handleLogin} />
             )}
-        </div>
+        </Container>
     );
 };
 

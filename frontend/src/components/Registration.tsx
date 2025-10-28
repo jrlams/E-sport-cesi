@@ -15,14 +15,11 @@ export default function Registration() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const games = [
+    'Minecraft',
+    'CS:GO',
+    'Wolfenstein',
+    'Smash',
     'League of Legends',
-    'Valorant',
-    'Counter-Strike 2',
-    'Rocket League',
-    'FIFA 24',
-    'Fortnite',
-    'Overwatch 2',
-    'Autre'
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

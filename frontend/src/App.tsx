@@ -6,6 +6,8 @@ import LiveStream from './components/LiveStream';
 import Feedback from './components/Feedback';
 import Footer from './components/Footer';
 import Admin from './components/Admin';
+import Schedule from './components/Schedule';
+import Games from './components/Games';
 
 function App() {
   const is_admin = window.location.pathname === '/admin';
@@ -18,6 +20,8 @@ function App() {
           <Navigation />
           <Hero />
           <About />
+          <Schedule />
+          <Games />
           <Registration />
           <LiveStream />
           <Feedback />
