@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import sql from 'mssql';
+import { Pool } from 'pg';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,89 +11,77 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const { DATABASE_USER, DATABASE_PASSWORD, DATABASE_SERVER, DATABASE_NAME, NODE_ENV } = process.env;
+// Use PostgreSQL environment variables
+const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_DB, NODE_ENV } = process.env;
 
-if (!DATABASE_USER || !DATABASE_PASSWORD || !DATABASE_SERVER || !DATABASE_NAME) {
-  throw new Error('Missing database configuration in environment variables.');
+if (!POSTGRES_USER || !POSTGRES_PASSWORD || !POSTGRES_HOST || !POSTGRES_DB) {
+  throw new Error('Missing PostgreSQL configuration in environment variables.');
 }
 
-const dbConfig = {
-  user: DATABASE_USER,
-  password: DATABASE_PASSWORD,
-  server: DATABASE_SERVER,
-  database: DATABASE_NAME,
-  options: {
-    encrypt: NODE_ENV === 'production',
-    trustServerCertificate: true
+const pool = new Pool({
+  user: POSTGRES_USER,
+  password: POSTGRES_PASSWORD,
+  host: POSTGRES_HOST,
+  database: POSTGRES_DB,
+  ssl: NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+});
+
+pool.connect()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch(err => console.error('Database connection failed:', err));
+
+
+app.get('/', (req, res) => {
+  res.send('Hello from the backend!');
+});
+
+// API endpoints rewritten for PostgreSQL
+app.post('/api/registrations', async (req, res) => {
+  try {
+    const { email, pseudo, team_name, game, phone } = req.body;
+    const query = 'INSERT INTO registrations (email, pseudo, team_name, game, phone) VALUES ($1, $2, $3, $4, $5)';
+    const values = [email, pseudo, team_name, game, phone];
+    await pool.query(query, values);
+    res.status(201).send({ message: 'Registration successful' });
+  } catch (error) {
+    res.status(500).send({ message: 'Error creating registration', error });
   }
-};
+});
 
-sql.connect(dbConfig).then(pool => {
-  console.log('Connected to SQL Server');
+app.get('/api/registrations', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM registrations');
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).send({ message: 'Error fetching registrations', error });
+  }
+});
 
-  app.get('/', (req, res) => {
-    res.send('Hello from the backend!');
-  });
+app.post('/api/feedback', async (req, res) => {
+  try {
+    const { email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again } = req.body;
+    const query = 'INSERT INTO feedback (email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+    const values = [email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again];
+    await pool.query(query, values);
+    res.status(201).send({ message: 'Feedback submitted successfully' });
+  } catch (error) {
+    res.status(500).send({ message: 'Error submitting feedback', error });
+  }
+});
 
-  // API endpoints will be added here
-  app.post('/api/registrations', async (req, res) => {
-    try {
-      const { email, pseudo, team_name, game, phone } = req.body;
-      await pool.request()
-        .input('email', sql.NVarChar, email)
-        .input('pseudo', sql.NVarChar, pseudo)
-        .input('team_name', sql.NVarChar, team_name)
-        .input('game', sql.NVarChar, game)
-        .input('phone', sql.NVarChar, phone)
-        .query('INSERT INTO registrations (email, pseudo, team_name, game, phone) VALUES (@email, @pseudo, @team_name, @game, @phone)');
-      res.status(201).send({ message: 'Registration successful' });
-    } catch (error) {
-      res.status(500).send({ message: 'Error creating registration', error });
-    }
-  });
+app.get('/api/feedback', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM feedback');
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).send({ message: 'Error fetching feedback', error });
+  }
+});
 
-  app.get('/api/registrations', async (req, res) => {
-    try {
-      const result = await pool.request().query('SELECT * FROM registrations');
-      res.status(200).json(result.recordset);
-    } catch (error) {
-      res.status(500).send({ message: 'Error fetching registrations', error });
-    }
-  });
-
-  app.post('/api/feedback', async (req, res) => {
-    try {
-      const { email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again } = req.body;
-      await pool.request()
-        .input('email', sql.NVarChar, email)
-        .input('rating', sql.Int, rating)
-        .input('organization_rating', sql.Int, organization_rating)
-        .input('gameplay_rating', sql.Int, gameplay_rating)
-        .input('venue_rating', sql.Int, venue_rating)
-        .input('comments', sql.NVarChar, comments)
-        .input('would_participate_again', sql.Bit, would_participate_again)
-        .query('INSERT INTO feedback (email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again) VALUES (@email, @rating, @organization_rating, @gameplay_rating, @venue_rating, @comments, @would_participate_again)');
-      res.status(201).send({ message: 'Feedback submitted successfully' });
-    } catch (error) {
-      res.status(500).send({ message: 'Error submitting feedback', error });
-    }
-  });
-
-  app.get('/api/feedback', async (req, res) => {
-    try {
-      const result = await pool.request().query('SELECT * FROM feedback');
-      res.status(200).json(result.recordset);
-    } catch (error) {
-      res.status(500).send({ message: 'Error fetching feedback', error });
-    }
-  });
-
-  app.get('/api/stream', (req, res) => {
-    res.status(200).json({ url: 'https://www.twitch.tv/cesi_esport' });
-  });
-}).catch(err => {
-  console.error('Database connection failed:', err);
-  process.exit(1);
+app.get('/api/stream', (req, res) => {
+  // The stream URL can be stored in .env or hardcoded if it's static
+  const streamUrl = process.env.STREAM_URL || 'https://www.twitch.tv/cesi_esport';
+  res.status(200).json({ url: streamUrl });
 });
 
 app.listen(port, () => {
