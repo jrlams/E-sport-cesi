@@ -21,7 +21,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
     networks:
       - esport-net
 
@@ -35,6 +36,12 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${SA_PASSWORD}", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
     networks:
       - esport-net
 
