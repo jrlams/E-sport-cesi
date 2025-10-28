@@ -25,8 +25,11 @@ export default function LiveStream() {
 
   const getEmbedUrl = (url: string) => {
     if (url.includes('twitch.tv')) {
-      const channel = url.split('twitch.tv/')[1]?.split('/')[0];
-      return `https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}`;
+      const match = url.match(/(?:twitch\.tv\/|channel=)([^&/?]+)/);
+      if (match && match[1]) {
+        const channel = match[1];
+        return `https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}`;
+      }
     } else if (url.includes('youtube.com/watch')) {
       const videoId = url.split('v=')[1]?.split('&')[0];
       return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
