@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
+import { authMiddleware } from './middleware';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -82,6 +83,78 @@ app.get('/api/stream', (req, res) => {
   // The stream URL can be stored in .env or hardcoded if it's static
   const streamUrl = process.env.STREAM_URL || 'https://www.twitch.tv/cesi_esport';
   res.status(200).json({ url: streamUrl });
+});
+
+// Admin routes
+app.put('/api/registrations/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { email, pseudo, team_name, game, phone, confirmed } = req.body;
+        const query = 'UPDATE registrations SET email = $1, pseudo = $2, team_name = $3, game = $4, phone = $5, confirmed = $6 WHERE id = $7';
+        const values = [email, pseudo, team_name, game, phone, confirmed, id];
+        await pool.query(query, values);
+        res.status(200).send({ message: 'Registration updated successfully' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error updating registration', error });
+    }
+});
+
+app.delete('/api/registrations/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = 'DELETE FROM registrations WHERE id = $1';
+        const values = [id];
+        await pool.query(query, values);
+        res.status(200).send({ message: 'Registration deleted successfully' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error deleting registration', error });
+    }
+});
+
+app.put('/api/feedback/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again } = req.body;
+        const query = 'UPDATE feedback SET email = $1, rating = $2, organization_rating = $3, gameplay_rating = $4, venue_rating = $5, comments = $6, would_participate_again = $7 WHERE id = $8';
+        const values = [email, rating, organization_rating, gameplay_rating, venue_rating, comments, would_participate_again, id];
+        await pool.query(query, values);
+        res.status(200).send({ message: 'Feedback updated successfully' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error updating feedback', error });
+    }
+});
+
+app.delete('/api/feedback/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = 'DELETE FROM feedback WHERE id = $1';
+        const values = [id];
+        await pool.query(query, values);
+        res.status(200).send({ message: 'Feedback deleted successfully' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error deleting feedback', error });
+    }
+});
+
+app.get('/api/settings', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM settings');
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).send({ message: 'Error fetching settings', error });
+    }
+});
+
+app.put('/api/settings', authMiddleware, async (req, res) => {
+    try {
+        const { key, value } = req.body;
+        const query = 'UPDATE settings SET value = $1 WHERE key = $2';
+        const values = [value, key];
+        await pool.query(query, values);
+        res.status(200).send({ message: 'Settings updated successfully' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error updating settings', error });
+    }
 });
 
 app.listen(port, () => {

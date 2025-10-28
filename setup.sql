@@ -31,3 +31,12 @@ CREATE INDEX idx_registrations_email ON registrations(email);
 CREATE INDEX idx_registrations_game ON registrations(game);
 CREATE INDEX idx_registrations_created_at ON registrations(created_at DESC);
 CREATE INDEX idx_feedback_created_at ON feedback(created_at DESC);
+
+-- Create settings table
+CREATE TABLE settings (
+  key VARCHAR(255) PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+-- Insert default stream URL
+INSERT INTO settings (key, value) VALUES ('stream_url', 'https://www.twitch.tv/cesi_esport');

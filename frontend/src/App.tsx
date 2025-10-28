@@ -5,17 +5,25 @@ import Registration from './components/Registration';
 import LiveStream from './components/LiveStream';
 import Feedback from './components/Feedback';
 import Footer from './components/Footer';
+import Admin from './components/Admin';
 
 function App() {
+  const is_admin = window.location.pathname === '/admin';
   return (
     <div className="min-h-screen bg-slate-900">
-      <Navigation />
-      <Hero />
-      <About />
-      <Registration />
-      <LiveStream />
-      <Feedback />
-      <Footer />
+      {is_admin ? (
+        <Admin />
+      ) : (
+        <>
+          <Navigation />
+          <Hero />
+          <About />
+          <Registration />
+          <LiveStream />
+          <Feedback />
+          <Footer />
+        </>
+      )}
     </div>
   );
 }
